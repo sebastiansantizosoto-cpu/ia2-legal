@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eliminación de Datos — IA²</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:       #0A0E1A;
+      --navy-light: #111827;
+      --navy-card:  #161D2E;
+      --gold:       #C9A84C;
+      --gold-light: #E8C96A;
+      --white:      #F8F9FA;
+      --gray:       #9CA3AF;
+      --border:     rgba(201,168,76,0.18);
+      --red:        #EF4444;
+      --red-soft:   rgba(239,68,68,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 22px 0;
+      position: sticky;
+      top: 0;
+      background: rgba(10,14,26,0.96);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .logo span {
+      color: var(--white);
+      font-size: 11px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-left: 10px;
+    }
+    .back-link {
+      font-size: 13px;
+      color: var(--gray);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold); }
+
+    /* HERO */
+    .hero {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 64px 32px 48px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--red-soft);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #FCA5A5;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 18px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .hero p {
+      font-size: 16px;
+      color: var(--gray);
+      max-width: 560px;
+      line-height: 1.75;
+    }
+
+    /* MAIN CONTENT */
+    .content {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* INFO CARD */
+    .card {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      width: 3px; height: 14px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+    .card p {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.75;
+      margin-bottom: 12px;
+    }
+    .card p:last-child { margin-bottom: 0; }
+    .card strong { color: var(--white); font-weight: 500; }
+
+    /* DATA LIST */
+    .data-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .data-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray);
+    }
+    .data-list li::before {
+      content: '→';
+      color: var(--gold);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* STEPS */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-text {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+    .step-text strong { color: var(--white); font-weight: 500; }
+
+    /* EMAIL HIGHLIGHT */
+    .email-box {
+      background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .email-box .email-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .email-box .email-addr {
+      font-family: 'DM Mono', monospace;
+      font-size: 15px;
+      color: var(--white);
+    }
+    .email-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .email-btn:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+
+    /* NOTICE BOX */
+    .notice {
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .notice p {
+      font-size: 14px;
+      color: #FCA5A5;
+      line-height: 1.7;
+    }
+    .notice strong { color: #FEE2E2; font-weight: 600; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+    }
+    footer p {
+      font-size: 13px;
+      color: var(--gray);
+      opacity: 0.6;
+    }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .header-inner, .hero, .content { padding-left: 20px; padding-right: 20px; }
+      .hero { padding-top: 40px; padding-bottom: 32px; }
+      .card { padding: 24px; }
+      .email-box { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">IA² <span>Asistente Inmobiliario</span></a>
+    <a href="/privacy-policy.html" class="back-link">← Política de Privacidad</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-badge">Eliminación de Datos</div>
+  <h1>Solicitar eliminación<br>de <em>tus datos</em></h1>
+  <p>Tienes el derecho de solicitar que eliminemos toda la información personal que IA² ha recopilado sobre ti. Este proceso es gratuito y lo completamos en un máximo de 30 días.</p>
+</section>
+
+<div class="content">
+
+  <!-- Qué eliminamos -->
+  <div class="card">
+    <div class="card-title">Qué datos eliminamos</div>
+    <p>Al recibir tu solicitud, procedemos a eliminar permanentemente:</p>
+    <ul class="data-list">
+      <li>Tu número de teléfono y perfil de WhatsApp</li>
+      <li>Todo el historial de conversaciones con el asistente</li>
+      <li>Las citas agendadas asociadas a tu número</li>
+      <li>Cualquier preferencia o criterio de búsqueda guardado</li>
+      <li>Registros de actividad e interacción con la plataforma</li>
+    </ul>
+  </div>
+
+  <!-- Cómo solicitarlo -->
+  <div class="card">
+    <div class="card-title">Cómo enviar tu solicitud</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Envía un correo a la dirección indicada abajo con el asunto <strong>"Eliminación de mis datos — IA²"</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Incluye en el mensaje <strong>tu número de teléfono de WhatsApp</strong> con código de país (ej. +502 XXXX-XXXX)</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Recibirás una <strong>confirmación por correo</strong> dentro de las siguientes 72 horas con la fecha límite de eliminación</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">La eliminación se completa en un máximo de <strong>30 días calendario</strong> desde la confirmación</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email de contacto -->
+  <div class="email-box">
+    <div>
+      <div class="email-label">Correo de solicitudes</div>
+      <div class="email-addr">sebastiansantizosoto@gmail.com</div>
+    </div>
+    <a href="mailto:sebastiansantizosoto@gmail.com?subject=Eliminaci%C3%B3n%20de%20mis%20datos%20%E2%80%94%20IA%C2%B2&body=Hola%2C%20solicito%20la%20eliminaci%C3%B3n%20de%20mis%20datos%20personales.%0A%0AMi%20n%C3%BAmero%20de%20WhatsApp%20es%3A%20%2B502%20" class="email-btn">
+      ✉ Enviar solicitud
+    </a>
+  </div>
+
+  <!-- Aviso -->
+  <div class="notice">
+    <p><strong>Importante:</strong> Una vez eliminados, los datos no pueden ser recuperados. Si en el futuro interactúas nuevamente con el asistente, se creará un nuevo perfil desde cero sin información previa.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <strong>IA²</strong> · Sebastian Gerek Santizo Soto · Guatemala ·
+    <a href="/privacy-policy.html">Política de Privacidad</a>
+  </p>
+</footer>
+
+</body>
+</html>
